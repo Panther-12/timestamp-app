@@ -75,7 +75,6 @@ app.get("/api/:date", (req, res)=>{
   else{
     // get the timestamp in milliseconds by multiplying by 1000
     utc_date = new Date(parseInt(date_string));
-    console.log(utc_date);
     res.json({
       utc: utc_date.toUTCString()
     })
