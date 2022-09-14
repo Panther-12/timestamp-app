@@ -43,36 +43,43 @@ app.get("/api/1451001600000", (req, res)=>{
   })
 })
 // check if a date is valid
-const validate_date = (date) =>{
-  if(Object.prototype.toString.call(date)==="[object Date]"){
-    if(!isNaN(date.getTime())){
-      return true
-    }
-    else{
-      return false
-    }
+const validate_date = (date_string) =>{
+  date = new Date(date_string);
+  if(!isNaN(date.getTime())){
+    return true
   }
   else{
     return false
   }
 }
 
+// check date format
+const check_format =(date)=>{
+  if(date.length===3 && date[0].length===4 && date[2] !==''){
+    return true
+}
+  else{
+    return false
+    }
+}
 // convert date to unix timestamp (january 1, 1970)
 app.get("/api/:date", (req, res)=>{
   var date_string = req.params.date;
   var utc_date;
-  var split_date = date_string.trim().split("-");
+  var clean_date = date_string.trim().split("-");
+
   
   // Determine whether the variable is a date or timestamp
-  validate_date(date_string);
-  utc_date = new Date(date_string);
-  if(validate_date && split_date[2] !== '' && split_date.length===3){
-    unix_time = utc_date.getTime()
-    res.json({
-      unix:unix_time,
-      utc:utc_date.toUTCString()
-    })
-  }
+  validation = validate_date(date_string);
+  format = check_format(clean_date);
+  if(validation && format){
+    utc_date = new Date(date_string);
+      unix_time = utc_date.getTime()
+      res.json({
+        unix:unix_time,
+        utc:utc_date.toUTCString()
+      })
+    }
   else{
     res.json({
       error: "Invalid Date"
