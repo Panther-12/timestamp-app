@@ -33,47 +33,54 @@ app.get("/api/", (req, res)=>{
   })
 })
 
-// convert timestamp to UTC time
-//app.get("/api/:utc", (req, res)=>{
-//  utc_date = new Date(req.params.utc);
-//  res.json({
-//    utc: utc_date.toUTCString()
-//  })
-//})
+// check if a date is valid
+const validate_date = (date) =>{
+  if(Object.prototype.toString.call(date)==="[object Date]"){
+    if(!isNaN(date.getTime())){
+      return true
+    }
+    else{
+      return false
+    }
+  }
+  else{
+    return false
+  }
+}
 
 // convert date to unix timestamp (january 1, 1970)
 app.get("/api/:date", (req, res)=>{
   var date_string = req.params.date;
+  var utc_date;
+  
   // Determine whether the variable is a date or timestamp
-  const char1, char2 = '-', '/';
-  if(date_string.includes(char) || date_string.includes(char)){
-    
+  const char1 ='-';
+  
+  if(date_string.includes(char1)){
+    validate_date(date_string);
+    if(validate_date){
+      utc_date = new Date(date_string);
+      unix_time = utc_date.getTime()
+      res.json({
+        unix:unix_time,
+        utc:utc_date.toUTCString()
+      })
+    }
+    else{
+      res.json({
+        error: "Invalid Date"
+      })
+    }
   }
   else{
-    var utc_date = new Date(req.params.date);
+    // get the timestamp in milliseconds by multiplying by 1000
+    utc_date = new Date(parseInt(date_string));
+    console.log(utc_date);
     res.json({
       utc: utc_date.toUTCString()
     })
   }
   
-  // Append the Z to get the recommended UTC Time
-  if(!date_string ){
-    var utc_date = Date.now("Z");
-    console.log(utc_date);
-  }
-  else if(date_string === new Date(date_string).toString()){
-    var utc_date = new Date(date_string+"Z");
-  }
-  else{
-    res.json({
-      error: "Invalid date"
-    })
-  }
-  var unix_time = utc_date.getUnixTime();
-  res.json({
-    utc: utc_date,
-    unix: unix_time
-  })
 })
 
 
