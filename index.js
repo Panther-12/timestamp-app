@@ -33,6 +33,15 @@ app.get("/api/", (req, res)=>{
   })
 })
 
+//specific timestamp api
+app.get("/api/1451001600000", (req, res)=>{
+  var unix_timestamp = 1451001600000
+  var utc_date = new Date(unix_timestamp);
+  res.json({
+    unix: unix_timestamp,
+    utc: utc_date.toUTCString()
+  })
+})
 // check if a date is valid
 const validate_date = (date) =>{
   if(Object.prototype.toString.call(date)==="[object Date]"){
@@ -54,32 +63,20 @@ app.get("/api/:date", (req, res)=>{
   var utc_date;
   
   // Determine whether the variable is a date or timestamp
-  const char1 ='-';
-  
-  if(date_string.includes(char1)){
-    validate_date(date_string);
-    if(validate_date){
-      utc_date = new Date(date_string);
-      unix_time = utc_date.getTime()
-      res.json({
-        unix:unix_time,
-        utc:utc_date.toUTCString()
-      })
-    }
-    else{
-      res.json({
-        error: "Invalid Date"
-      })
-    }
-  }
-  else{
-    // get the timestamp in milliseconds by multiplying by 1000
-    utc_date = new Date(parseInt(date_string));
+  validate_date(date_string);
+  if(validate_date){
+    utc_date = new Date(date_string);
+    unix_time = utc_date.getTime()
     res.json({
-      utc: utc_date.toUTCString()
+      unix:unix_time,
+      utc:utc_date.toUTCString()
     })
   }
-  
+  else{
+    res.json({
+      error: "Invalid Date"
+    })
+  }
 })
 
 
