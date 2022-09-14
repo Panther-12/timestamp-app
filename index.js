@@ -61,10 +61,12 @@ const validate_date = (date) =>{
 app.get("/api/:date", (req, res)=>{
   var date_string = req.params.date;
   var utc_date;
+  var split_date = date_string.trim().split("-");
   
   // Determine whether the variable is a date or timestamp
   validate_date(date_string);
-  if(validate_date){
+  if(validate_date && split_date[2] !== '' && split_date.length===3){
+    console.log(date_string.split("-"))
     utc_date = new Date(date_string);
     unix_time = utc_date.getTime()
     res.json({
