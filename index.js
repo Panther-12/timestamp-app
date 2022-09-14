@@ -72,7 +72,7 @@ app.get("/api/:date", (req, res)=>{
   // Determine whether the variable is a date or timestamp
   validation = validate_date(date_string);
   format = check_format(clean_date);
-  if(validation && format){
+  if(validation){
     utc_date = new Date(date_string);
       unix_time = utc_date.getTime()
       res.json({
